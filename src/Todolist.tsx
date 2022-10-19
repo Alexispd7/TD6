@@ -51,6 +51,7 @@ export function Todolist(props: PropsType) {
     const onCompletedClickHandler = () => props.changeFilter("completed", props.id);
 
     return <div>
+
         <h3> {props.title}
             <button onClick={removeTodolist}>x</button>
         </h3>
@@ -94,4 +95,42 @@ export function Todolist(props: PropsType) {
     </div>
 }
 
+type AddItemFormPropsType = {
+    addTask: (title: string, todolistId: string) => void,
+    id: string
+}
+
+function AddItemForm(props: AddItemFormPropsType) {
+    let [title, setTitle] = useState("");
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.currentTarget.value)
+    };
+    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        setError(null);
+        if (e.charCode === 13) {
+            addTask();
+        }
+    };
+    let [error, setError] = useState<string | null>(null);
+    const addTask = () => {
+        let newTitle = title.trim();
+        if (newTitle !== "") {
+            props.addTask(newTitle, props.id);
+            setTitle("");
+        } else {
+            setError("Title is required");
+        }
+    }
+
+
+    return <div>
+        <input value={title}
+               onChange={onChangeHandler}
+               onKeyPress={onKeyPressHandler}
+               className={error ? "error" : ""}
+        />
+        <button onClick={addTask}>+</button>
+        {error && <div className="error-message">{error}</div>}
+    </div>
+}
 
